@@ -119,6 +119,9 @@ def Qlearning():
             
             #Keep track of total reward of episode
             rewardCounter += reward
+            #Print latest path
+            if n == trials - 1:
+                print(posY, posX, rewardCounter)
             #Update position
             posX, posY = newPosX, newPosY
         rewardCounters.append(rewardCounter)
@@ -160,14 +163,18 @@ def sarsa():
             #update qVals based on next action
             Qvals[posY][posX][action] = Qvals[posY][posX][action] + alpha * (reward + (gamma * Qvals[newPosY][newPosX][newAction]) - Qvals[posY][posX][action])
             
+            #Print latest path
+            if n == trials - 1:
+                print(posY, posX, rewardCounter)
+            
             #update position and action
             posX, posY = newPosX, newPosY
             action = newAction
-        rewardCounters.append(rewardCounter)    
+        rewardCounters.append(rewardCounter)
     return rewardCounters
 #Fix seed
 
-seed(1)
+seed(3)
 #Create a normalize function to improve the graphs
 #Parameter for normalizing
 maxDeviation = 300
@@ -206,12 +213,15 @@ def normalizeCombine(results):
 #Make the plots
 QlearningResults = Qlearning()
 sarsaResults = sarsa()
+
+#Set normalization 
 plt.plot(normalizeCombine(QlearningResults), linewidth = 0.7, label="Q-learning")
 plt.plot(normalizeCombine(sarsaResults), linewidth = 0.7, label="sarsa")
 plt.legend()
+#Change to -100000 for random method
 plt.ylim(-100, 0)
-plt.xlim(0, 500)
+plt.xlim(0, trials)
 plt.ylabel("Sum of rewards of episode")
 plt.xlabel("Episode")
-plt.title("Normalized results of sarsa and Q-learning using e-greedy with epsilon=0.1")
+plt.title("Normalized results of sarsa and Q-learning using e-greedy, epsilon=0.1")
 plt.show()
